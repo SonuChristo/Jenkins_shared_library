@@ -10,12 +10,19 @@
 // }
 
 def call(String aws_account_id, String region, String ecr_repo_name) {
-    // Tag the Docker image with the ECR repository URL
-    sh "docker tag ${ecr_repo_name}:latest ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repo_name}:latest"
+    withCredentials([[
+        $class: 'AmazonWebServicesCredentialsBinding',
+        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+    ]]) {
+        // Authenticate Docker with AWS
+        sh "aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repo_name}"
 
-    // Push the Docker image to the public ECR repository
-    sh "docker push ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repo_name}:latest"
+        // Tag and push the Docker image to ECR
+        sh "docker push ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repo_name}:latest"
+    }
 }
+
 
 // Example usage:
 // dockerImagePush('your_aws_account_id', 'your_aws_region', 'your_ecr_repo_name')
