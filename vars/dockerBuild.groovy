@@ -14,7 +14,7 @@ def call(String aws_account_id , String region , String ecr_repo_name){
 docker build -t ${ecr_repo_name} .
 
 # Tag the image with the ECR repository URL
-docker tag ${ecr_repo_name}:latest ${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/${ecr_repo_name}:latest
+docker tag ${ecr_repo_name}:latest ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${ecr_repo_name}:latest
 
 
     """
