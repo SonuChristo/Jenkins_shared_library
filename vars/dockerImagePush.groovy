@@ -11,7 +11,7 @@
 
 def call(String aws_account_id, String region, String ecr_repo_name) {
     withCredentials([[
-        $class: 'AmazonWebServicesCredentialsBinding',
+        $class: 'aws-credentials',
         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
     ]]) {
